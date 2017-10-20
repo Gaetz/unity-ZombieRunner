@@ -2,25 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Helicopter : MonoBehaviour {
+public class Helicopter : MonoBehaviour
+{
 
     public AudioClip callSound;
 
-    private bool isCalled = false;
-    private AudioSource audioSource;
+    private bool isHelicopterCalled;
+    private AudioSource callAudioSource;
 
-	// Use this for initialization
-	void Start () {
-        audioSource = GetComponent<AudioSource>();
+    Rigidbody rbody;
+
+    public void Start()
+    {
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        foreach (AudioSource source in audioSources)
+        {
+            if (source.priority == 1)
+            {
+                callAudioSource = source;
+            }
+        }
+        rbody = GetComponent<Rigidbody>();
+        isHelicopterCalled = false;
     }
 
-    // Update is called once per frame
-    void Update () {
-        if (Input.GetButton("CallHelicopter") && !isCalled)
+    public void Call()
+    {
+        if (!isHelicopterCalled)
         {
-            isCalled = true;
-            audioSource.clip = callSound;
-            audioSource.Play();
+            // Bug, don't know why
+            AudioSource[] audioSources = GetComponents<AudioSource>();
+            foreach (AudioSource source in audioSources)
+            {
+                if (source.priority == 1)
+                {
+                    callAudioSource = source;
+                }
+            }
+            rbody = GetComponent<Rigidbody>();
+
+            // End bug fix
+
+            callAudioSource.clip = callSound;
+            callAudioSource.enabled = true;
+            callAudioSource.Play();
+            rbody.velocity = new Vector3(0, 0, 50f);
+            isHelicopterCalled = true;
         }
     }
 }
