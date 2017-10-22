@@ -6,41 +6,26 @@ public class Player : MonoBehaviour {
 
     public Transform spawnGroup;
     public bool respawn = false;
-    public Helicopter helicopter;
+    public GameObject landingArea;
 
-    public AudioClip WhatHappened;
-
-    private AudioSource innerVoice;
     private Transform[] spawnPoints;
-    private bool lastToggle;
+    private bool lastRespawnToggle;
 
 	// Use this for initialization
 	void Start () {
         spawnPoints = spawnGroup.GetComponentsInChildren<Transform>();
-
-        AudioSource[] audioSources = GetComponents<AudioSource>();
-        foreach (AudioSource source in audioSources)
-        {
-            if (source.priority == 1)
-            {
-                innerVoice = source;
-            }
-        }
-
-        innerVoice.clip = WhatHappened;
-        innerVoice.Play();
     }
 	
 	// Update is called once per frame
 	void Update () {
-		if(lastToggle != respawn)
+		if(lastRespawnToggle != respawn)
         {
             Respawn();
             respawn = false;
         }
         else
         {
-            lastToggle = respawn;
+            lastRespawnToggle = respawn;
         }
 	}
 
@@ -52,6 +37,12 @@ public class Player : MonoBehaviour {
 
     void OnFindClearArea()
     {
-        helicopter.Call();
+        Invoke("DropFlare", 3f);
+        DropFlare();
+    }
+
+    void DropFlare()
+    {
+        Instantiate(landingArea, transform.position, transform.rotation);
     }
 }

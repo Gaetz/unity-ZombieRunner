@@ -6,6 +6,7 @@ public class ClearArea : MonoBehaviour
 {
 
     public float timeSinceLastTrigger = 0f;
+    private bool foundClearArea = false;
 
     // Use this for initialization
     void Start()
@@ -17,15 +18,16 @@ public class ClearArea : MonoBehaviour
     void Update()
     {
         timeSinceLastTrigger += Time.deltaTime;
-        if (timeSinceLastTrigger > 1f && Time.realtimeSinceStartup > 10f)
+        if (timeSinceLastTrigger > 1f && Time.realtimeSinceStartup > 10f && !foundClearArea)
         {
             SendMessageUpwards("OnFindClearArea");
+            foundClearArea = true;
         }
     }
 
     void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag != "Player")
+        if (other.tag != "Player")
         {
             timeSinceLastTrigger = 0f;
         }
